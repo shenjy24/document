@@ -35,21 +35,23 @@ docker run -d -p 8088:8080 tomcat
 （3）运行如下指令：
 
 ```
-docker run -d -p 8080:8080 -p 15005:15005 -v E:/workspace/yw/hyt/YWHttpService/:/usr/local/tomcat/webapps --restart=always tomcat
+docker run -d -p 8080:8080 -p 15005:15005 -v E:/workspace/yw/hyt/YWHttpService/:/usr/local/tomcat/webapps --restart=always -e CATALINA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,address=15005,suspend=n,server=y" tomcat
 ```
 
 - tomcat默认端口为8080
 
-- 15005为远程调试端口的映射，需要在tomcat的catalina.sh添加如下配置：
-
-  ```
-  CATALINA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,address=15005,suspend=n,server=y"
-  ```
+- 15005为远程调试端口的映射
 
 （4）通过postman等工具测试
 
 ```
 http://127.0.0.1:8080/YWHttpService/yw/add_plugin_credit
+```
+
+或使用curl在机器上测试：
+
+```
+curl -H "Content-Type:application/json" -X POST --data '{"serverType":"game"}' http://127.0.0.1:8080/YWHttpService/yw/add_plugin_credit
 ```
 
 

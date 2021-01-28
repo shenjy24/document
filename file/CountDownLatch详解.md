@@ -1,3 +1,4 @@
+### 使用说明
 #### 简单示例
 
 ```java
@@ -82,4 +83,39 @@ public class Worker implements Runnable {
     }
 }
 ```
+
+### 源码分析
+#### 数据结构
+CountDownLatch只有一个sync的属性，sync的类型是CountDownLatch内部类Sync同步器，Sync继承自AQS，CountDownLatch正是通过该同步器实现
+相应的线程同步功能，其源码如下：
+```java
+private static final class Sync extends AbstractQueuedSynchronizer {
+    private static final long serialVersionUID = 4982264981922014374L;
+
+    Sync(int count) {
+        setState(count);
+    }
+
+    int getCount() {
+        return getState();
+    }
+
+    protected int tryAcquireShared(int acquires) {
+        return (getState() == 0) ? 1 : -1;
+    }
+
+    protected boolean tryReleaseShared(int releases) {
+        // Decrement count; signal when transition to zero
+        for (;;) {
+            int c = getState();
+            if (c == 0)
+                return false;
+            int nextc = c-1;
+            if (compareAndSetState(c, nextc))
+                return nextc == 0;
+        }
+    }
+}
+```
+
 

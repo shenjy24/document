@@ -1,5 +1,8 @@
-### 使用说明
-#### 简单示例
+### 使用概述
+
+
+
+简单示例：
 
 ```java
 public class Driver {
@@ -118,4 +121,12 @@ private static final class Sync extends AbstractQueuedSynchronizer {
 }
 ```
 
-
+#### 核心方法
+##### 构造函数
+```java
+public CountDownLatch(int count) {
+	if (count < 0) throw new IllegalArgumentException("count < 0");
+    //count即为共享变量state的值
+	this.sync = new Sync(count);
+}
+```
